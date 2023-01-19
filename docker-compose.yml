@@ -1,0 +1,17 @@
+version: "3.10"
+
+services:
+  app:
+    build: .
+    command: npm start
+    working_dir: /testing
+    volumes:
+      - .:/testing
+    ports:
+      - 3000:3000
+    environment:
+      - PATH=/app/node_modules/.bin:$PATH
+    depends_on:
+      - node
+  node:
+    image: node:18.3.0-alpine
