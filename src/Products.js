@@ -1,41 +1,70 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useReducer } from "react";
 
-function Products() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const initialState = {
+  products: [{}],
+  loading: false,
+  error: null,
+};
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await axios.get("https://dummyjson.com/products/1");
-        console.log("responseee", res.data);
-        setLoading(true);
-        setProducts(res.data);
-      } catch (error) {
-        setError(error);
-      }
-      setLoading(false);
-    };
-    fetchData();
-  }, []);
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_PRODUCTS_REQUEST":
+      return { ...state, loading: true };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>An error occurred: {error.message}</p>;
+    case "FETCH_PRODUCTS_SUCCESS":
+      return { ...state, loading: false, products: action.payload };
 
+    case "FETCH_PRODUCTS_FAILURE":
+      return { ...state, loading: false, error: action.payload };
+
+    default:
+      return state;
+  }
+};
+
+const Products = () => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  const fetchProducts = async () => {
+    try {
+      const data = await fetch("https://dummyjson.com/products");
+      const products = await data.json();
+      console.log(products, "dataa---------------");
+
+      dispatch({ type: "FETCH_PRODUCTS_SUCCESS", payload: products });
+    } catch (error) {
+      dispatch({ type: "FETCH_PRODUCTS_FAILURE", payload: error });
+    }
+  };
   return (
     <div>
-      {products.map((product) => (
-        <div key={product.id}>
-          <h2>{product.name}</h2>
-          <p>{product.description}</p>
-        </div>
-      ))}
+      <button onClick={fetchProducts}>Load Products</button>
+
+      <ul>
+        {state?.products?.products?.map((product) => (
+          <>
+            {/* <ul>
+              <li>
+                <h4>Mobile Name :{product.brand}</h4>
+              </li>
+              <ul>
+                {" "}
+                <li key={product.title}>Price:{product.price}</li>
+                <li>Description:{product.description}</li>
+              </ul>
+            </ul> */}
+            <div class="card" style={{ width: "18rem" }} key={product.id}>
+              <img src={product.thumbnail} class="card-img-top" alt="..." />
+              <div class="card-body">
+                <h5 class="card-title">{product.title}</h5>
+                <h6>${product.price}</h6>
+                <p class="card-text">{product.description}</p>
+              </div>
+            </div>
+          </>
+        ))}
+      </ul>
     </div>
   );
-}
-
+};
 export default Products;
