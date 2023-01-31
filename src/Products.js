@@ -37,27 +37,23 @@ const Products = () => {
     }
   };
   return (
-    <div>
-      <button onClick={fetchProducts}>Load Products</button>
+    <div style={{ display: "flex", flexWrap: "wrap" }}>
+      <button style={{ margin: "10px auto" }} onClick={fetchProducts}>
+        Load Products
+      </button>
 
-      <ul>
+      <ul style={{ display: "flex", flexWrap: "wrap" }}>
         {state?.products?.products?.map((product) => (
           <>
-            {/* <ul>
-              <li>
-                <h4>Mobile Name :{product.brand}</h4>
-              </li>
-              <ul>
-                {" "}
-                <li key={product.title}>Price:{product.price}</li>
-                <li>Description:{product.description}</li>
-              </ul>
-            </ul> */}
-            <div class="card" style={{ width: "18rem" }} key={product.id}>
+            <div
+              class="card"
+              style={{ width: "18rem", margin: "10px" }}
+              key={product.id}
+            >
               <img src={product.thumbnail} class="card-img-top" alt="..." />
               <div class="card-body">
                 <h5 class="card-title">{product.title}</h5>
-                <h6>${product.price}</h6>
+                <h6 style={{ color: "green" }}>${product.price}</h6>
                 <p class="card-text">{product.description}</p>
               </div>
             </div>
